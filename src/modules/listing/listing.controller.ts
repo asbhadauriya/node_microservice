@@ -13,7 +13,7 @@ export class ListingController {
   }
 
   static async getListingById(req: Request, res: Response) {
-    const listing = await ListingService.getListingById(req.params.id)
+    const listing = await ListingService.getListingById(req.params.id as string)
     res.json(listing)
   }
 }
