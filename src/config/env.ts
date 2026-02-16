@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import { z } from 'zod'
 
+
 dotenv.config()
 
 const envSchema = z.object({
@@ -14,9 +15,11 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(10).optional()
 })
 
+
+
 const parsed = envSchema.parse(process.env)
 
-const env = {
+export const env = {
   NODE_ENV: parsed.NODE_ENV,
   PORT: parsed.PORT,
   DATABASE_URL: parsed.DATABASE_URL ?? '',
@@ -28,4 +31,3 @@ if (env.NODE_ENV === 'production') {
   if (!env.JWT_SECRET) throw new Error('JWT_SECRET is required in production')
 }
 
-export default env
