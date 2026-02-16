@@ -2,6 +2,58 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  phoneNumber   String?  @unique
+  role          UserRole @default(customer)
+  name          String?
+  profile_image String?
+  rating_avg    Float    @default(0)
+  rating_count  Int      @default(0)
+  created_at    DateTime @default(now())
+    // Relations
+  customerJobs Job[] @relation("CustomerJobs")
+  workerJobs   Job[] @relation("WorkerJobs")
+}
+
+enum UserRole {
+  customer
+  worker
+}
+
+// ----------------------------
+
+model Job {
+  id            String    @id @default(uuid())
+  customer_id   String
+  worker_id     String?
+  category_id   Int?
+  description   String?
+  budget        Float?
+  status        JobStatus @default(POSTED)
+  scheduled_date DateTime?
+  address       String?
+  latitude      Float?
+  longitude     Float?
+  created_at    DateTime  @default(now())
+
+  // Relations
+  customer User @relation("CustomerJobs", fields: [customer_id], references: [id])
+  worker   User? @relation("WorkerJobs", fields: [worker_id], references: [id])
+}
+
+enum JobStatus {
+  POSTED
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
